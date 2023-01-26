@@ -15,10 +15,18 @@
                 <div class="status">
                     <h1 class="dark:text-white" id="status"></h1>
                 </div>
-                <div class="flex justify-center">
-                    <div id="board" style="width: 700px"></div>
+                <div class="board">
+                    <div class="flex justify-center">
+                        <div id="board" class="chess-board"</div>
+                    </div>
+                    <div class="pgn-container">
+                        <div class="pgn-text-container">
+                            <div class="pgn-text">White:</div>
+                            <div class="pgn-text-2">Black:</div>
+                        </div>
+                        <p id="pgn"></p>
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>

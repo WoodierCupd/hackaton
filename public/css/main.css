@@ -3,6 +3,7 @@
     font-weight: bold;
     font-size: 24px;
     margin-bottom: 5px;
+    padding-top: 8px;
 }
 
 .status{
@@ -22,6 +23,38 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-.font-family{
+.font-family {
     font-family: 'Montserrat', sans-serif;
+}
+
+.board{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.chess-board{
+    width: 700px;
+    margin-bottom: 80px;
+    margin-right: 22px;
+    margin-left: 242px;
+}
+
+.pgn-container{
+    display: block;
+    width: 220px;
+    word-spacing: 50px;
+}
+
+.pgn-text-container{
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: row;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.pgn-text{
+    margin-left: 20px;
+    margin-right: 25px;
+
 }
