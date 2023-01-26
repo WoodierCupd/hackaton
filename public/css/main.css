@@ -11,6 +11,12 @@
     justify-content: center;
 }
 
+.font-title{
+    font-size: 2.9rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #586465;
+}
+
 .title{
     font-size: 2.4rem;
     color: #586465;
