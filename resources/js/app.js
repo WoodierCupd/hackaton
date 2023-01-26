@@ -24,21 +24,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // only pick up pieces for the side to move
         if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-            (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+            (game.turn() === 'b' && piece.search(/^w/) !== -1) ||
+            (game.turn() === 'b' && piece.search(/^b/) !== -1)){
             return false
         }
     }
 
     function onDrop (source, target) {
+        // looks if the move is on the same square
+        if (source === target) {
+            return null
+        }
         // see if the move is legal
         var move = game.move({
             from: source,
             to: target,
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         })
-
-        // illegal move
-        if (move === null) return 'snapback'
+        if (move === null) {
+            // illegal move
+            return 'snapback'
+        }
 
         updateStatus()
     }
@@ -54,8 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
         var randomIdx = Math.floor(Math.random() * possibleMoves.length)
         game.move(possibleMoves[randomIdx])
         board.position(game.fen())
+        updateStatus()
     }
-    
+
     function updateStatus () {
         var status = ''
 
