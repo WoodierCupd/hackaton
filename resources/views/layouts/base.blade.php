@@ -21,7 +21,7 @@
         <nav class="hidden space-x-10 md:flex">
             <div class="relative">
 
-            <a href="{{route('dashboard')}}" class="text-gray-500 group inline-flex items-center rounded-md bg-white text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Pricing</a>
+            <a href="{{route('dashboard')}}" class="text-gray-500 group inline-flex items-center rounded-md bg-white text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Dashboard</a>
 
             <div class="relative">
             <!-- Item active: "text-gray-900", Item inactive: "text-gray-500" -->
