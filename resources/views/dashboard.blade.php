@@ -14,14 +14,7 @@
     </div>
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                var board = Chessboard('board', {
-                    draggable: true,
-                    dropOffBoard: 'trash',
-                    position: 'start',
-                    sparePieces: false
-                })
-            });
+
         </script>
     @endpush
 </x-app-layout>
