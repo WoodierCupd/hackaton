@@ -49,6 +49,13 @@ document.addEventListener('DOMContentLoaded', () => {
         board.position(game.fen())
     }
 
+    function makeRandomMove() {
+        var possibleMoves = game.moves()
+        var randomIdx = Math.floor(Math.random() * possibleMoves.length)
+        game.move(possibleMoves[randomIdx])
+        board.position(game.fen())
+    }
+    
     function updateStatus () {
         var status = ''
 
@@ -80,16 +87,12 @@ document.addEventListener('DOMContentLoaded', () => {
         $status.html(status)
         $fen.html(game.fen())
         $pgn.html(game.pgn())
-    }
 
-    // function aiMove () {
-    //     var possibleMoves = game.moves()
-    //     // exit if the game is over
-    //     if (game.isGameOver()) return
-    //     var randomIdx = Math.floor(Math.random() * possibleMoves.length)
-    //     game.move(possibleMoves[randomIdx])
-    //     board.position(game.fen())
-    // }
+        if (moveColor === 'Black') {
+            // make random legal move for black
+            window.setTimeout(makeRandomMove, 250)
+        }
+    }
 
     var config = {
         draggable: true,
