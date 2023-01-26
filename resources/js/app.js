@@ -31,15 +31,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function onDrop (source, target) {
+        // looks if the move is on the same square
+        if (source === target) {
+            return null
+        }
         // see if the move is legal
         var move = game.move({
             from: source,
             to: target,
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         })
-
-        // illegal move
-        if (move === null) return 'snapback'
+        if (move === null) {
+            // illegal move
+            return 'snapback'
+        }
 
         updateStatus()
     }
