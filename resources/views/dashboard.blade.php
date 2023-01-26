@@ -13,6 +13,21 @@
                     <a class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" href="">Create lobby</a>
                 </div>
             </div>
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div id="board" style="width: 400px"></div>
+            </div>
         </div>
     </div>
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                var board = Chessboard('board', {
+                    draggable: true,
+                    dropOffBoard: 'trash',
+                    position: 'start',
+                    sparePieces: false
+                })
+            });
+        </script>
+    @endpush
 </x-app-layout>

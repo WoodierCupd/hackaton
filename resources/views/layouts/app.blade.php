@@ -12,6 +12,11 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Chess -->
+        <link rel="stylesheet" href="{{ asset('chess/chessboard-1.0.0.css') }}">
+        <script src="{{ asset('chess/chessboard-1.0.0.js') }}"></script>
+
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -32,4 +37,5 @@
             </main>
         </div>
     </body>
+    @stack('scripts')
 </html>
