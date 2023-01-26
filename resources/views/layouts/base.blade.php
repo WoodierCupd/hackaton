@@ -143,6 +143,8 @@
     </div>
 </header>
 <body>
-    @yield('content')
+    <div class="container" style="margin: auto;">
+        @yield('content')
+    </div>
 </body>
 </html>

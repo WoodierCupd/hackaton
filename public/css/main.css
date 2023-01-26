@@ -9,3 +9,19 @@
     display: flex;
     justify-content: center;
 }
+
+.title{
+    font-size: 2.4rem;
+    color: #586465;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.tussen-titel{
+    font-size: 1.8rem;
+    color: #586465;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.font-family{
+    font-family: 'Montserrat', sans-serif;
+}
