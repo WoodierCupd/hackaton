@@ -1,6 +1,7 @@
 @extends('layouts.base')
 @section('content')
     <link rel="stylesheet" href="{{asset('css/main.css')}}">
+    <h1 class="font-title">Schaakspelregels</h1>
     <h2 class="title">Het schaakbord</h2>
     <p class="font-family">Het eerste dat je nodig hebt om te kunnen schaken is een schaakbord. Je ziet een schaakbord in diagram (1), let even op dat het veld linksonder altijd een zwart veld is! Zoals je ziet is een schaakbord 8 velden lang en 8 velden breed, in totaal dus 64 velden. Alle velden doen bij schaken mee! Al die velden hebben een voornaam en een achternaam. In het diagram zie je rond het schaakbord letters en cijfers staan. Elk veld heeft als voornaam een letter en als achternaam een cijfer. Het veld linksonder heet bijvoorbeeld a1, en het veld rechtsboven h8. De 4 velden in het midden van het bord waar de stukken(pionnen) op staan (d4, d5, e4 en e5) noemen we het centrum. Deze velden zijn belangrijk omdat daar vaak gestreden wordt. In het schaken noemen we een horizontale lijn (met de cijfers) een rij (dus bijvoorbeeld de 2e rij), en de verticale lijn (met de letters) een lijn (dus bijvoorbeeld de c-lijn). Een schuine lijn noemen we een diagonaal. Nu we iets van het schaakbord weten gaan we eens naar de stukken kijken.</p>
 
