@@ -1,0 +1,11 @@
+.status h1{
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.status{
+    display: flex;
+    justify-content: center;
+}
