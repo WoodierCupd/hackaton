@@ -11,7 +11,7 @@
     <div class="mx-auto max-w-7xl px-6">
         <div class="flex items-center justify-between border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
         <div class="flex justify-start lg:w-0 lg:flex-1">
-            <a href="{{route('views.welcome')}}">
+            <a href="{{route('Home')}}">
             <span class="sr-only">Your Company</span>
             <img class="h-8 w-auto sm:h-10" src="{{asset('img/logo.png')}}" alt="">
             </a>
@@ -340,6 +340,6 @@
     </div>
 </header>
 <body>
-    
+    @yield('content')
 </body>
 </html>
