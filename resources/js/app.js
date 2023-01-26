@@ -82,16 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
         $pgn.html(game.pgn())
     }
 
-    var config = {
-        draggable: true,
-        position: 'start',
-        onDragStart: onDragStart,
-        onDrop: onDrop,
-        onSnapEnd: onSnapEnd
-    }
-    board = Chessboard('board', config)
-
-    updateStatus()
     // function aiMove () {
     //     var possibleMoves = game.moves()
     //     // exit if the game is over
@@ -100,5 +90,17 @@ document.addEventListener('DOMContentLoaded', () => {
     //     game.move(possibleMoves[randomIdx])
     //     board.position(game.fen())
     // }
+
+    var config = {
+        draggable: true,
+        position: 'start',
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onSnapEnd: onSnapEnd,
+    }
+
+    board = Chessboard('board', config)
+    updateStatus()
+
 });
 
