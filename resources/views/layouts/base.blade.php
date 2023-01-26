@@ -5,13 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=	, initial-scale=1.0">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title></title>
 </head>
 <header>
     <div class="relative bg-white">
     <div class="mx-auto max-w-7xl px-6">
         <div class="flex items-center justify-between border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
         <div class="flex justify-start lg:w-0 lg:flex-1">
-            <a href="{{route('Home')}}">
+            <a href="{{route('dashboard')}}">
             <span class="sr-only">Your Company</span>
             <img class="h-8 w-auto sm:h-10" src="{{asset('img/logo.png')}}" alt="">
             </a>
