@@ -54,8 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
         var randomIdx = Math.floor(Math.random() * possibleMoves.length)
         game.move(possibleMoves[randomIdx])
         board.position(game.fen())
+        updateStatus()
     }
-    
+
     function updateStatus () {
         var status = ''
 
