@@ -11,6 +11,8 @@ window.$ = jQuery;
 
 import { Chess } from 'chess.js';
 
+import * as jsChessEngine from 'js-chess-engine';
+
 document.addEventListener('DOMContentLoaded', () => {
     var board = null
     var game = new Chess()
@@ -56,9 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function makeRandomMove() {
+        const ai = new jsChessEngine.Game(game.fen());
+        const move = ai.aiMove( 3);
         var possibleMoves = game.moves()
         var randomIdx = Math.floor(Math.random() * possibleMoves.length)
-        game.move(possibleMoves[randomIdx])
+        game.move({ from: Object.keys(move)[0].toString().toLowerCase(), to: Object.values(move)[0].toString().toLowerCase(), promotion: 'q' });
         board.position(game.fen())
         updateStatus()
     }
