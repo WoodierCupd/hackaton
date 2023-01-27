@@ -8,10 +8,6 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mt-2">
-{{--                <div class="p-6 text-gray-900 dark:text-gray-100">--}}
-{{--                    <a class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" href="">Join lobby</a>--}}
-{{--                    <a class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" href="">Create lobby</a>--}}
-{{--                </div>--}}
                 <div class="status">
                     <h1 class="dark:text-white" id="status"></h1>
                 </div>
@@ -21,10 +17,10 @@
                     </div>
                     <div class="pgn-container">
                         <div class="pgn-text-container">
-                            <div class="pgn-text">White:</div>
-                            <div class="pgn-text-2">Black:</div>
+                            <div class="pgn-text dark:text-white">White:</div>
+                            <div class="pgn-text-2 dark:text-white">Black:</div>
                         </div>
-                        <p id="pgn"></p>
+                        <p id="pgn" class="dark:text-white"></p>
                     </div>
                 </div>
             </div>
@@ -32,7 +28,108 @@
     </div>
     @push('scripts')
         <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                var board = null
+                var game = new Chess()
+                var $status = $('#status')
+                var $fen = $('#fen')
+                var $pgn = $('#pgn')
 
+                function onDragStart (source, piece, position, orientation) {
+                    // do not pick up pieces if the game is over
+                    if (game.isGameOver()) return false
+
+                    // only pick up pieces for the side to move
+                    if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+                        (game.turn() === 'b' && piece.search(/^w/) !== -1) ||
+                        (game.turn() === 'b' && piece.search(/^b/) !== -1)){
+                        return false
+                    }
+                }
+
+                function onDrop (source, target) {
+                    // looks if the move is on the same square
+                    if (source === target) {
+                        return null
+                    }
+                    // see if the move is legal
+                    var move = game.move({
+                        from: source,
+                        to: target,
+                        promotion: 'q' // NOTE: always promote to a queen for example simplicity
+                    })
+                    if (move === null) {
+                        // illegal move
+                        return 'snapback'
+                    }
+
+                    updateStatus()
+                }
+
+                // update the board position after the piece snap
+                // for castling, en passant, pawn promotion
+                function onSnapEnd () {
+                    board.position(game.fen())
+                }
+
+                function makeRandomMove() {
+                    const ai = new jsChessEngine.Game(game.fen());
+                    const move = ai.aiMove( 3);
+                    game.move({ from: Object.keys(move)[0].toString().toLowerCase(), to: Object.values(move)[0].toString().toLowerCase(), promotion: 'q' });
+                    board.position(game.fen())
+                    updateStatus()
+                }
+
+                function updateStatus () {
+                    var status = ''
+
+                    var moveColor = 'White'
+                    if (game.turn() === 'b') {
+                        moveColor = 'Black'
+                    }
+
+                    // checkmate?
+                    if (game.isCheckmate()) {
+                        status = 'Game over, ' + moveColor + ' is in checkmate.'
+                    }
+
+                    // draw?
+                    else if (game.isDraw()) {
+                        status = 'Game over, drawn position'
+                    }
+
+                    // game still on
+                    else {
+                        status = moveColor + ' to move'
+
+                        // check?
+                        if (game.isCheck()) {
+                            status += ', ' + moveColor + ' is in check'
+                        }
+                    }
+
+                    $status.html(status)
+                    $fen.html(game.fen())
+                    $pgn.html(game.pgn())
+
+                    if (moveColor === 'Black') {
+                        // make random legal move for black
+                        window.setTimeout(makeRandomMove, 250)
+                    }
+                }
+
+                var config = {
+                    draggable: true,
+                    position: 'start',
+                    onDragStart: onDragStart,
+                    onDrop: onDrop,
+                    onSnapEnd: onSnapEnd,
+                }
+
+                board = Chessboard('board', config)
+                updateStatus()
+
+            });
         </script>
     @endpush
 </x-app-layout>
