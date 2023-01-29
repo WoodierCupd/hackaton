@@ -8,6 +8,8 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mt-2">
+                <button type="button" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onclick="newGame()">New Game</button>
+                <button type="button" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onclick="settings()">Settings</button>
                 <div class="status">
                     <h1 class="dark:text-white" id="status"></h1>
                 </div>
@@ -26,27 +28,70 @@
             </div>
         </div>
     </div>
+    <div id="settings" class="hidden fixed top-0 left-0 right-0 z-50 hidden w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm">
+        <div class="relative w-full h-full max-w-2xl mx-auto backdrop-blur-none">
+            <!-- Settings content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <!-- Settings Title -->
+                <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        Settings
+                    </h3>
+                    <button type="button" onclick="settings()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+                <!-- Settings body -->
+                <div class="p-6">
+{{--                    <label for="time" class="block pb-2 text-sm font-medium text-gray-900 dark:text-white mb">Time</label>--}}
+{{--                    <select id="time" class="mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">--}}
+{{--                        <option value="5">5 Min</option>--}}
+{{--                        <option value="10">10 Min</option>--}}
+{{--                        <option selected value="15">15 Min</option>--}}
+{{--                        <option value="30">30 Min</option>--}}
+{{--                        <option value="60">60 Min</option>--}}
+{{--                    </select>--}}
+                    <label for="skill" class="block pb-2 text-sm font-medium text-gray-900 dark:text-white">Difficulty</label>
+                    <select id="skill" class="mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option value="0">Very easy</option>
+                        <option value="1">Easy</option>
+                        <option selected value="2">Normal</option>
+                        <option value="3">Hard</option>
+                        <option value="4">Very Hard</option>
+                    </select>
+                    <label for="color" class="block pb-2 text-sm font-medium text-gray-900 dark:text-white">Player color</label>
+                    <select id="color" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option selected value="white">White</option>
+                        <option value="black">Black</option>
+                    </select>
+                </div>
+            </div>
+    </div>
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                var board = null
-                var game = new Chess()
+            function gameEngine(){
+                var game = new Chess();
+                var board;
                 var $status = $('#status')
                 var $fen = $('#fen')
                 var $pgn = $('#pgn')
+                var playerColor = 'white';
+                var skillLevel = 2;
+                // var time = 15;
 
                 function onDragStart (source, piece, position, orientation) {
-                    // do not pick up pieces if the game is over
-                    if (game.isGameOver()) return false
+                    var re = playerColor == 'white' ? /^b/ : /^w/
 
-                    // only pick up pieces for the side to move
+                    // Checks if the game is not over, it's your own side, and if the match is not over
                     if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
                         (game.turn() === 'b' && piece.search(/^w/) !== -1) ||
-                        (game.turn() === 'b' && piece.search(/^b/) !== -1)){
+                        (game.isGameOver()) ||
+                        piece.search(re) !== -1) {
                         return false
                     }
                 }
 
+                // checks if the move is legal and makes the move
                 function onDrop (source, target) {
                     // looks if the move is on the same square
                     if (source === target) {
@@ -72,9 +117,10 @@
                     board.position(game.fen())
                 }
 
-                function makeRandomMove() {
+                function aiMove(){
                     const ai = new jsChessEngine.Game(game.fen());
-                    const move = ai.aiMove( 3);
+                    const move = ai.aiMove(skillLevel);
+                    console.log(skillLevel);
                     game.move({ from: Object.keys(move)[0].toString().toLowerCase(), to: Object.values(move)[0].toString().toLowerCase(), promotion: 'q' });
                     board.position(game.fen())
                     updateStatus()
@@ -112,9 +158,8 @@
                     $fen.html(game.fen())
                     $pgn.html(game.pgn())
 
-                    if (moveColor === 'Black') {
-                        // make random legal move for black
-                        window.setTimeout(makeRandomMove, 250)
+                    if (moveColor.toLowerCase() !== playerColor) {
+                        window.setTimeout(aiMove, 250)
                     }
                 }
 
@@ -127,9 +172,51 @@
                 }
 
                 board = Chessboard('board', config)
-                updateStatus()
 
-            });
+                return {
+                    reset: function () {
+                        game.reset();
+                    },
+                    setPlayerColor: function(color) {
+                        playerColor = color;
+                        board.orientation(playerColor);
+                    },
+                    setSkill: function(skill) {
+                        skillLevel = skill;
+                    },
+                    start: function() {
+                        board.start();
+                        updateStatus();
+                    },
+                }
+            }
+
+            function init() {
+                var game = gameEngine();
+
+                newGame = function newGame() {
+                    var skill = parseInt($('#skill').val());
+                    var time = parseFloat($('#time').val()) * 60;
+                    var playerColor = $('#color').val();
+                    game.reset();
+                    game.setPlayerColor(playerColor);
+                    game.setSkill(skill);
+                    game.start();
+                }
+
+                newGame();
+            }
+
+            function settings() {
+                const settings = document.getElementById("settings");
+                if (settings.classList.contains("hidden")) {
+                    settings.classList.remove("hidden");
+                } else {
+                    settings.classList.add("hidden");
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', init);
         </script>
     @endpush
 </x-app-layout>
