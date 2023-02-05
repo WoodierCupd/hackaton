@@ -19,8 +19,8 @@
                     </div>
                     <div class="pgn-container">
                         <div class="pgn-text-container">
-                            <div class="pgn-text dark:text-white">White:</div>
-                            <div class="pgn-text-2 dark:text-white">Black:</div>
+                            <p class="dark:text-white" id="timeWhite"></p>
+                            <p class="dark:text-white" id="timeBlack"></p>
                         </div>
                         <p id="pgn" class="dark:text-white"></p>
                     </div>
@@ -43,14 +43,14 @@
                 </div>
                 <!-- Settings body -->
                 <div class="p-6">
-{{--                    <label for="time" class="block pb-2 text-sm font-medium text-gray-900 dark:text-white mb">Time</label>--}}
-{{--                    <select id="time" class="mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">--}}
-{{--                        <option value="5">5 Min</option>--}}
-{{--                        <option value="10">10 Min</option>--}}
-{{--                        <option selected value="15">15 Min</option>--}}
-{{--                        <option value="30">30 Min</option>--}}
-{{--                        <option value="60">60 Min</option>--}}
-{{--                    </select>--}}
+                    <label for="time" class="block pb-2 text-sm font-medium text-gray-900 dark:text-white mb">Time</label>
+                    <select id="time" class="mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option value="5">5 Min</option>
+                        <option value="10">10 Min</option>
+                        <option selected value="15">15 Min</option>
+                        <option value="30">30 Min</option>
+                        <option value="60">60 Min</option>
+                    </select>
                     <label for="skill" class="block pb-2 text-sm font-medium text-gray-900 dark:text-white">Difficulty</label>
                     <select id="skill" class="mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option value="0">Very easy</option>
@@ -75,9 +75,37 @@
                 var $status = $('#status')
                 var $fen = $('#fen')
                 var $pgn = $('#pgn')
-                var playerColor = 'white';
-                var skillLevel = 2;
-                // var time = 15;
+                var playerColor;
+                var skillLevel;
+                var time;
+                var timeoutTime = null;
+
+                function startTime(color){
+                    stopTime();
+                    if(time.w === 0 || time.b === 0){
+                        updateStatus();
+                        return;
+                    }
+                    if(color === "white"){
+                        time.w --;
+                        let minutes = Math.floor(time.w / 60);
+                        let seconds = time.w % 60;
+                        $('#timeWhite').text('White: ' + minutes + ':' + seconds);
+                    } else{
+                        time.b --;
+                        let minutes = Math.floor(time.b / 60);
+                        let seconds = time.b % 60;
+                        $('#timeBlack').text('Black: ' + minutes + ':' + seconds);
+                    }
+                    timeoutTime = setTimeout(startTime, 1000, color);
+                }
+
+                function stopTime(){
+                    if(timeoutTime !== null){
+                        clearTimeout(timeoutTime);
+                        timeoutTime = null;
+                    }
+                }
 
                 function onDragStart (source, piece, position, orientation) {
                     var re = playerColor == 'white' ? /^b/ : /^w/
@@ -86,7 +114,8 @@
                     if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
                         (game.turn() === 'b' && piece.search(/^w/) !== -1) ||
                         (game.isGameOver()) ||
-                        piece.search(re) !== -1) {
+                        piece.search(re) !== -1 ||
+                        time.w === 0 || time.b === 0) {
                         return false
                     }
                 }
@@ -120,7 +149,6 @@
                 function aiMove(){
                     const ai = new jsChessEngine.Game(game.fen());
                     const move = ai.aiMove(skillLevel);
-                    console.log(skillLevel);
                     game.move({ from: Object.keys(move)[0].toString().toLowerCase(), to: Object.values(move)[0].toString().toLowerCase(), promotion: 'q' });
                     board.position(game.fen())
                     updateStatus()
@@ -129,9 +157,9 @@
                 function updateStatus () {
                     var status = ''
 
-                    var moveColor = 'White'
+                    var moveColor = 'white'
                     if (game.turn() === 'b') {
-                        moveColor = 'Black'
+                        moveColor = 'black'
                     }
 
                     // checkmate?
@@ -142,6 +170,14 @@
                     // draw?
                     else if (game.isDraw()) {
                         status = 'Game over, drawn position'
+                    }
+
+                    else if (time.w === 0 || time.b === 0) {
+                        if(time.w === 0){
+                            status = 'Game over, white is out of time'
+                        } else{
+                            status = 'Game over, black is out of time'
+                        }
                     }
 
                     // game still on
@@ -158,8 +194,11 @@
                     $fen.html(game.fen())
                     $pgn.html(game.pgn())
 
-                    if (moveColor.toLowerCase() !== playerColor) {
-                        window.setTimeout(aiMove, 250)
+                    if (moveColor !== playerColor) {
+                        startTime(moveColor);
+                        setTimeout(aiMove, 250)
+                    } else {
+                        startTime(moveColor);
                     }
                 }
 
@@ -184,6 +223,11 @@
                     setSkill: function(skill) {
                         skillLevel = skill;
                     },
+                    setTime: function(totalTime) {
+                        time = {w: totalTime, b: totalTime};
+                        $('#timeWhite').text('White: ' + Math.floor(time.w / 60) + ':' + time.w % 60);
+                        $('#timeBlack').text('Black: ' + Math.floor(time.b / 60) + ':' + time.b % 60);
+                    },
                     start: function() {
                         board.start();
                         updateStatus();
@@ -201,6 +245,7 @@
                     game.reset();
                     game.setPlayerColor(playerColor);
                     game.setSkill(skill);
+                    game.setTime(time);
                     game.start();
                 }
 
